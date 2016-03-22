@@ -11,7 +11,7 @@ output [idx_w-1:0] min_idx;
 
 wire [data_w*2*(DD>>1)-1:0] pairs [ppl_l(DD>>1):0];
 wire [idx_w*2*(DD>>1)-1:0] m_idx [ppl_l(DD>>1):0];
-wire [ppl_l(DD>>1):0] cmp;
+wire [(DD>>1)-1:0] cmp;
 
 genvar i;
 //--------------
@@ -31,7 +31,7 @@ if(D & 1) begin
 end
 
 for(i=0; i<ppl_l(DD>>1); i=i+1) begin :pipeline
-	merge_N #(.Pin(ppl_w(DD>>1, i))) MN (
+	merge_N #(.Pin(ppl_w(DD>>1, i)), .data_w(data_w), .idx_w(idx_w)) MN (
 		.clk(clk),
 		.rst(rst),
 		.in(pairs[i]),

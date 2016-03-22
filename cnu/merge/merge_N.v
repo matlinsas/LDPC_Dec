@@ -17,7 +17,7 @@ genvar i;
 
 generate
 for(i=0; (i+1)*2<=Pin; i=i+1) begin :merge_pairs
-	merge M (
+	merge #(.data_w(data_w), .idx_w(idx_w)) M (
 		.clk(clk),
 		.rst(rst),
 		.in(in[data_w*4*i +:data_w*4]),

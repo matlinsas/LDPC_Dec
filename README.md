@@ -1,6 +1,6 @@
 # LDPC_Dec
 
 VLSI implementation of QC-LDPC decoder using min-sum algorithm  
-○ Layered architecture  
-○ Parallel CNU design  
+○ Full parallel architecture  
+○ Parallel CNU/VNU design  
 ○ Parameterized modules in Verilog RTL  

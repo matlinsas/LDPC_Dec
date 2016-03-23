@@ -1,4 +1,4 @@
-module vnu(clk, rst, l, r, q);
+module vnu(clk, rst, l, r, q, dec);
 parameter data_w = 8;
 parameter idx_w = 8;
 parameter D=5;
@@ -7,6 +7,7 @@ input	clk, rst;
 input	[data_w-1:0] l;
 input	[data_w*D-1:0] r;
 output	[data_w*D-1:0] q;
+output dec;
 
 reg 	[data_w*D-1:0] q;
 reg 	[data_w-1:0] t;
@@ -33,5 +34,7 @@ for(i=0; i<D; i=i+1)begin :sum
 	end
 end
 endgenerate
+
+assign dec = t[data_w-1];
 
 endmodule

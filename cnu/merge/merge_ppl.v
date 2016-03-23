@@ -3,14 +3,15 @@ parameter data_w = 8;
 parameter idx_w = 8;
 parameter D = 5;
 localparam DD = (D & 1)?(D+1):D;
+localparam PL = ppl_l(DD>>1);
 
 input clk, rst;
 input [data_w*D-1:0] in;
 output [data_w-1:0] min, min2;
 output [idx_w-1:0] min_idx;
 
-wire [data_w*2*(DD>>1)-1:0] pairs [ppl_l(DD>>1):0];
-wire [idx_w*2*(DD>>1)-1:0] m_idx [ppl_l(DD>>1):0];
+wire [data_w*2*(DD>>1)-1:0] pairs [PL:0];
+wire [idx_w*2*(DD>>1)-1:0] m_idx [PL:0];
 wire [(DD>>1)-1:0] cmp;
 
 genvar i;
@@ -30,7 +31,7 @@ if(D & 1) begin
 	assign m_idx[0][idx_w*2*((DD>>1)-1) +:idx_w*2]={D, D-1};
 end
 
-for(i=0; i<ppl_l(DD>>1); i=i+1) begin :pipeline
+for(i=0; i<PL; i=i+1) begin :pipeline
 	merge_N #(.Pin(ppl_w(DD>>1, i)), .data_w(data_w), .idx_w(idx_w)) MN (
 		.clk(clk),
 		.rst(rst),
@@ -42,9 +43,9 @@ for(i=0; i<ppl_l(DD>>1); i=i+1) begin :pipeline
 end
 endgenerate
 
-assign min2 = pairs[ppl_l(DD>>1)][data_w*2-1:data_w];
-assign min = pairs[ppl_l(DD>>1)][data_w-1:0];
-assign min_idx = m_idx[ppl_l(DD>>1)][idx_w-1:0];
+assign min2 = pairs[PL][data_w*2-1:data_w];
+assign min = pairs[PL][data_w-1:0];
+assign min_idx = m_idx[PL][idx_w-1:0];
 //------------
 function integer next_n;
 	input integer n;
@@ -57,9 +58,8 @@ function integer ppl_w;
 	input integer n, l;
 	begin
 		ppl_w = n;
-		while(ppl_w>1 && l>0) begin
+		for(l=l; l>0; l=l-1) begin
 			ppl_w = next_n(ppl_w);
-			l = l - 1;
 		end
 	end
 endfunction

@@ -1,4 +1,4 @@
-module top();
+module top(clk, rst);
 parameter data_w = 8;
 parameter R = 5;
 parameter C = 3;
@@ -15,6 +15,8 @@ wire [data_w*R-1:0] c_ibus [C*D-1:0];
 wire [data_w*R-1:0] c_obus [C*D-1:0];
 wire [data_w*C-1:0] v_ibus [R*D-1:0];
 wire [data_w*C-1:0] v_obus [R*D-1:0];
+
+reg [data_w-1:0] mtx [C-1:0][R-1:0];
 
 genvar i,j,k;
 
@@ -49,27 +51,7 @@ for(i=0; i<C*D; i=i+1) begin :cnu_array
 	);
 end
 
-for(i=0; i<C*D; i=i+1) begin :vnu_array
-	vnu #(.data_w(data_w), .D(C)) VNU (
-		.clk(clk),
-		.rst(rst),
-		.l(),
-		.r(v_obus[i]),
-		.q(v_ibus[i]),
-		end
-    end
-end
-
-for(i=0; i<C*D; i=i+1) begin :cnu_array
-	cnu #(.data_w(data_w), .D(R)) CNU (
-		.clk(clk),
-		.rst(rst),
-		.q(c_ibus[i]),
-		.r(c_obus[i])
-	);
-end
-
-for(i=0; i<C*D; i=i+1) begin :vnu_array
+for(i=0; i<R*D; i=i+1) begin :vnu_array
 	vnu #(.data_w(data_w), .D(C)) VNU (
 		.clk(clk),
 		.rst(rst),
@@ -79,7 +61,6 @@ for(i=0; i<C*D; i=i+1) begin :vnu_array
 		.dec(dec[i])
 	);
 end
-
 endgenerate
 
 endmodule

@@ -8,7 +8,7 @@ input	[data_w*D-1:0] q;
 output	[data_w*D-1:0] r;
 
 wire	[data_w-1:0] min, min2;
-reg	[data_w*D-1:0] r;
+reg		[data_w*D-1:0] r;
 wire	rsgn;
 
 wire	[data_w*D-1:0] qmag;

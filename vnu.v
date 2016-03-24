@@ -7,7 +7,7 @@ input	clk, rst;
 input	[data_w-1:0] l;
 input	[data_w*D-1:0] r;
 output	[data_w*D-1:0] q;
-output dec;
+output	dec;
 
 reg 	[data_w*D-1:0] q;
 reg 	[data_w-1:0] t;

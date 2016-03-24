@@ -56,8 +56,8 @@ for(i=0; i<R*D; i=i+1) begin :vnu_array
 		.clk(clk),
 		.rst(rst),
 		.l(),
-		.r(v_obus[i]),
-		.q(v_ibus[i]),
+		.r(v_ibus[i]),
+		.q(v_obus[i]),
 		.dec(dec[i])
 	);
 end

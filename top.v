@@ -34,10 +34,10 @@ for(i=0; i<C; i=i+1) begin :column
 		);
 
 		for(k=0; k<D; k=k+1) begin :bus_mapping
-			assign vtc[i][j][k*data_w +:data_w] = v_obus[(j+1)*(k+1)-1][i*data_w +:data_w];
-			assign v_ibus[(j+1)*(k+1)-1][i*data_w +:data_w] = v[i][j][k*data_w +:data_w];
-			assign ctv[i][j][k*data_w +:data_w] = c_obus[(i+1)*(k+1)-1][j*data_w +:data_w];
-			assign c_ibus[(i+1)*(k+1)-1][j*data_w +:data_w] = c[i][j][k*data_w +:data_w];
+			assign vtc[i][j][k*data_w +:data_w] = v_obus[j*D+k][i*data_w +:data_w];
+			assign v_ibus[j*D+k][i*data_w +:data_w] = v[i][j][k*data_w +:data_w];
+			assign ctv[i][j][k*data_w +:data_w] = c_obus[i*D+k][j*data_w +:data_w];
+			assign c_ibus[i*D+k][j*data_w +:data_w] = c[i][j][k*data_w +:data_w];
 		end
     end
 end

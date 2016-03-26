@@ -16,6 +16,7 @@ wire [data_w*R-1:0] c_obus [C*D-1:0];
 wire [data_w*C-1:0] v_ibus [R*D-1:0];
 wire [data_w*C-1:0] v_obus [R*D-1:0];
 
+reg [data_w-1:0] l [R*D-1:0];
 reg [data_w-1:0] mtx [C-1:0][R-1:0];
 
 genvar i,j,k;
@@ -55,7 +56,7 @@ for(i=0; i<R*D; i=i+1) begin :vnu_array
 	vnu #(.data_w(data_w), .D(C)) VNU (
 		.clk(clk),
 		.rst(rst),
-		.l(),
+		.l(l[i]),
 		.r(v_ibus[i]),
 		.q(v_obus[i]),
 		.dec(dec[i])

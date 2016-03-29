@@ -12,7 +12,7 @@ reg		[data_w*D-1:0] r;
 wire	rsgn;
 
 wire	[data_w*D-1:0] qmag;
-wire	[idx_w*D-1:0] min_idx;
+wire	[idx_w-1:0] min_idx;
 wire	[D-1:0] qsgn;
 
 genvar i;

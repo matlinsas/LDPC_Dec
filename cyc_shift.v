@@ -1,8 +1,7 @@
-module cyc_shift(clk, rst, shift, vtc, ctv, c ,v);
+module cyc_shift(shift, vtc, ctv, c ,v);
 parameter data_w = 8;
 parameter D = 5;
 
-input clk, rst;
 input [data_w-1:0] shift;
 input [data_w*D-1:0] ctv, vtc;
 output [data_w*D-1:0] c, v;

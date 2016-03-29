@@ -1,10 +1,13 @@
-module top(clk, rst);
+module top(clk, rst, l_in, mtx_in, dec);
 parameter data_w = 8;
 parameter R = 5;
 parameter C = 3;
 parameter D = 8;
 
 input clk, rst;
+input [data_w*R*D-1:0] l_in;
+input [data_w*C*R-1:0] mtx_in;
+output [R*D-1:0] dec;
 
 wire [R*D-1:0] dec;
 wire [data_w*D-1:0] ctv [C-1:0][R-1:0];
@@ -16,17 +19,33 @@ wire [data_w*R-1:0] c_obus [C*D-1:0];
 wire [data_w*C-1:0] v_ibus [R*D-1:0];
 wire [data_w*C-1:0] v_obus [R*D-1:0];
 
+reg set;
 reg [data_w-1:0] l [R*D-1:0];
 reg [data_w-1:0] mtx [C-1:0][R-1:0];
 
 genvar i,j,k;
 
+integer it_i, it_j;
+
+always @(posedge rst) begin
+	set <= 1;
+end
+
+always @(posedge set) begin
+for(it_i=0; it_i<R*D; it_i=it_i+1) begin
+	l[it_i] <= l_in[it_i*data_w +:data_w];
+end
+for(it_i=0; it_i<C; it_i=it_i+1) begin
+	for(it_j=0; it_j<R; it_j=it_j+1) begin
+		mtx[it_i][it_j] <= mtx_in[it_i*R+it_j +:data_w];
+	end
+end
+end
+
 generate
 for(i=0; i<C; i=i+1) begin :column
     for(j=0; j<R; j=j+1) begin :row
 		cyc_shift #(.D(D), .data_w(data_w)) CYC(
-			.clk(clk),
-			.rst(rst),
 			.shift(mtx[i][j]),
 			.vtc(vtc[i][j]),
 			.c(c[i][j]),

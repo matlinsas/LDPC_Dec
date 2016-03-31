@@ -4,7 +4,8 @@ parameter idx_w = 8;
 parameter D=5;
 
 input	clk, rst;
-input	[data_w-1:0] l;
+input l;
+//input	[data_w-1:0] l;
 input	[data_w*D-1:0] r;
 output	[data_w*D-1:0] q;
 output	dec;

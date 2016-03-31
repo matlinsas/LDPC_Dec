@@ -5,7 +5,7 @@ parameter C = 3;
 parameter D = 8;
 
 input clk, rst;
-input [data_w*R*D-1:0] l_in;
+input [R*D-1:0] l_in;
 input [data_w*C*R-1:0] mtx_in;
 output [R*D-1:0] dec;
 
@@ -20,7 +20,7 @@ wire [data_w*C-1:0] v_ibus [R*D-1:0];
 wire [data_w*C-1:0] v_obus [R*D-1:0];
 
 reg set;
-reg [data_w-1:0] l [R*D-1:0];
+reg [R*D-1:0] l;
 reg [data_w-1:0] mtx [C-1:0][R-1:0];
 
 genvar i,j,k;
@@ -32,9 +32,7 @@ always @(posedge rst) begin
 end
 
 always @(posedge set) begin
-for(it_i=0; it_i<R*D; it_i=it_i+1) begin
-	l[it_i] <= l_in[it_i*data_w +:data_w];
-end
+l <= l_in;
 for(it_i=0; it_i<C; it_i=it_i+1) begin
 	for(it_j=0; it_j<R; it_j=it_j+1) begin
 		mtx[it_i][it_j] <= mtx_in[it_i*R+it_j +:data_w];
@@ -46,7 +44,7 @@ generate
 for(i=0; i<C; i=i+1) begin :column
     for(j=0; j<R; j=j+1) begin :row
 		cyc_shift #(.D(D), .data_w(data_w)) CYC(
-			.shift(mtx[i][j]),
+			.shift(8'b0),//mtx[i][j]),
 			.vtc(vtc[i][j]),
 			.c(c[i][j]),
 			.ctv(ctv[i][j]),
@@ -75,7 +73,7 @@ for(i=0; i<R*D; i=i+1) begin :vnu_array
 	vnu #(.data_w(data_w), .D(C)) VNU (
 		.clk(clk),
 		.rst(rst),
-		.l(l[i]),
+		.l(1'b0),//l[i]),
 		.r(v_ibus[i]),
 		.q(v_obus[i]),
 		.dec(dec[i])

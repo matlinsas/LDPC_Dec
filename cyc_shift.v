@@ -6,7 +6,18 @@ input [data_w-1:0] shift;
 input [data_w*D-1:0] ctv, vtc;
 output [data_w*D-1:0] c, v;
 
-assign c = (vtc>>(shift*data_w)) | (vtc<<((D-shift)*data_w)) ;
-assign v = (ctv>>(shift*data_w)) | (ctv<<((D-shift)*data_w)) ;
+reg [data_w*D-1:0] c, v;
+
+always @(*) begin
+	if(shift == {data_w{1'b1}})
+		begin
+		c <= {D*data_w{1'b1}};
+		v <= {D*data_w{1'b0}};
+		end
+	else begin
+		c <= (vtc>>(shift*data_w)) | (vtc<<((D-shift)*data_w)) ;
+		v <= (ctv>>(shift*data_w)) | (ctv<<((D-shift)*data_w)) ;
+	end
+end
 
 endmodule 

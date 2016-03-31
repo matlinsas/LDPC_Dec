@@ -37,23 +37,19 @@ assign rsgn = ^qsgn;
 
 generate
 for(i=0; i<D; i=i+1) begin :calc_r
-   always @(posedge clk or posedge rst) begin
-	   if(rst==1)begin
-		   r[(i+1)*data_w-1:i*data_w]<=0;
-	   end else begin 
-		   if(min_idx == i) begin
-			   if(rsgn^qsgn[i])
-				   r[i*data_w +:data_w]<=-(((min2<<1)+min2)>>2);
-			   else
-				   r[i*data_w +:data_w]<=(((min2<<1)+min2)>>2);
-		   end else begin
-			   if(rsgn^qsgn[i])
-				   r[i*data_w +:data_w]<=-(((min<<1)+min)>>2);
-			   else
-				   r[i*data_w +:data_w]<=(((min<<1)+min)>>2);
-		   end
-	   end 
-   end
+	always @(*) begin
+		if(min_idx == i) begin
+			if(rsgn^qsgn[i])
+				r[i*data_w +:data_w]<=-(((min2<<1)+min2)>>2);
+			else
+				r[i*data_w +:data_w]<=(((min2<<1)+min2)>>2);
+		end else begin
+			if(rsgn^qsgn[i])
+				r[i*data_w +:data_w]<=-(((min<<1)+min)>>2);
+			else
+				r[i*data_w +:data_w]<=(((min<<1)+min)>>2);
+		end
+	end
 end
 endgenerate
 

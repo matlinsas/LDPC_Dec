@@ -2,13 +2,13 @@ module merge_ppl(clk, rst, in, min, min2, min_idx);
 parameter data_w = 8;
 parameter idx_w = 8;
 parameter D = 5;
-localparam DD = (D & 1)?(D+1):D;
+localparam DD = (D & 1)?(D + 1):D;
 localparam PL = ppl_l(DD>>1);
 
 input clk, rst;
 input [data_w*D-1:0] in;
-output [data_w-1:0] min, min2;
-output [idx_w-1:0] min_idx;
+output reg [data_w-1:0] min, min2;
+output reg [idx_w-1:0] min_idx;
 
 wire [data_w*2*(DD>>1)-1:0] pairs [PL:0];
 wire [idx_w*2*(DD>>1)-1:0] m_idx [PL:0];
@@ -17,7 +17,6 @@ wire [(DD>>1)-1:0] cmp;
 genvar i;
 //--------------
 generate
-
 for(i=0; i<(D>>1); i=i+1) begin :generate_pairs
 	assign cmp[i] = (in[data_w*2*i +:data_w] > in[data_w*(2*i+1) +:data_w]);
 	assign pairs[0][i*2*data_w +:data_w*2] = cmp[i]?
@@ -33,8 +32,6 @@ end
 
 for(i=0; i<PL; i=i+1) begin :pipeline
 	merge_N #(.Pin(ppl_w(DD>>1, i)), .data_w(data_w), .idx_w(idx_w)) MN (
-		.clk(clk),
-		.rst(rst),
 		.in(pairs[i]),
 		.idx_in(m_idx[i]),
 		.out(pairs[i+1]),
@@ -43,9 +40,18 @@ for(i=0; i<PL; i=i+1) begin :pipeline
 end
 endgenerate
 
-assign min2 = pairs[PL][data_w*2-1:data_w];
-assign min = pairs[PL][data_w-1:0];
-assign min_idx = m_idx[PL][idx_w-1:0];
+always @(posedge clk or posedge rst) begin
+	if(rst)begin
+		min2 = 0;
+		min = 0;
+		min_idx = 0;
+	end
+	else begin
+		min2 <= pairs[PL][data_w*2-1:data_w];
+		min <= pairs[PL][data_w-1:0];
+		min_idx <= m_idx[PL][idx_w-1:0];
+	end
+end
 //------------
 function integer next_n;
 	input integer n;

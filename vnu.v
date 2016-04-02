@@ -15,7 +15,7 @@ reg 	[data_w-1:0] t;
 genvar i;
 integer j;
 
-always @(posedge clk or posedge rst) begin
+always @(*) begin
 	if(rst == 1)
 		t = 0;
 	else begin

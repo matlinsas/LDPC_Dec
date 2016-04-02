@@ -42,14 +42,14 @@ endgenerate
 
 always @(posedge clk or posedge rst) begin
 	if(rst)begin
-		min2 = 0;
-		min = 0;
-		min_idx = 0;
+		min <= 0;
+		min2 <= 0;
+		min_idx <= 0;
 	end
 	else begin
-		min2 <= pairs[PL][data_w*2-1:data_w];
 		min <= pairs[PL][data_w-1:0];
 		min_idx <= m_idx[PL][idx_w-1:0];
+		min2 <= pairs[PL][data_w*2-1:data_w];
 	end
 end
 //------------

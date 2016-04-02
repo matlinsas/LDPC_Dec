@@ -1,8 +1,8 @@
 module top(clk, rst, l_in, mtx_in, dec);
 parameter data_w = 8;
-parameter R = 5;
-parameter C = 3;
-parameter D = 8;
+parameter R = 32;
+parameter C = 16;
+parameter D = 64;
 
 input clk, rst;
 input [R*D-1:0] l_in;
@@ -71,8 +71,6 @@ end
 
 for(i=0; i<R*D; i=i+1) begin :vnu_array
 	vnu #(.data_w(data_w), .D(C)) VNU (
-		.clk(clk),
-		.rst(rst),
 		.l(1'b0),//l[i]),
 		.r(v_ibus[i]),
 		.q(v_obus[i]),

@@ -1,8 +1,8 @@
 module top(clk, rst, sig, mtx, res, err);
 parameter data_w = 8;
-parameter R = 32;
-parameter C = 16;
-parameter D = 64;
+parameter R = 8;
+parameter C = 4;
+parameter D = 8;
 
 input clk, rst;
 input [R*D-1:0] sig;

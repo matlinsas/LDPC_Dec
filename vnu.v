@@ -3,11 +3,13 @@ parameter data_w = 8;
 parameter idx_w = 8;
 parameter D=5;
 
-input l;
+input 	[data_w-1:0] l;
 input	[data_w*D-1:0] r;
 output	[data_w*D-1:0] q;
 output	dec;
+
 reg 	[data_w-1:0] t;
+
 genvar i;
 integer j;
 
@@ -26,3 +28,4 @@ endgenerate
 assign dec = t[data_w-1];
 
 endmodule
+

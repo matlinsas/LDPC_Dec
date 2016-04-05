@@ -1,17 +1,17 @@
 module top(clk, rst, sig, mtx, res, err);
 parameter data_w = 8;
-parameter R = 32;
-parameter C = 16;
-parameter D = 64;
+parameter R = 24;
+parameter C = 12;
+parameter D = 24;
 
 input clk, rst;
-input [R*D-1:0] sig;
+input [R*D*data_w-1:0] sig;
 input [C*R*data_w-1:0] mtx;
 output reg err;
 output reg [R*D-1:0] res;
 
 reg term;
-reg [R*D-1:0] l;
+reg [R*D*data_w-1:0] l;
 reg [data_w:0] count;
 
 wire check;
@@ -29,9 +29,9 @@ genvar i,j,k;
 
 generate
 for(i=0; i<C; i=i+1) begin :column
-    for(j=0; j<R; j=j+1) begin :row
+	for(j=0; j<R; j=j+1) begin :row
 		cyc_shift #(.D(D), .data_w(data_w)) CYC(
-			.shift(mtx[(i*R+j)*data_w +:data_w]),
+			.shift(mtx[(i*R+j)*data_w +:data_w]%D),
 			.vtc(vtc[i][j]),
 			.c(c[i][j]),
 			.ctv(ctv[i][j]),
@@ -44,7 +44,7 @@ for(i=0; i<C; i=i+1) begin :column
 			assign ctv[i][j][k*data_w +:data_w] = c_obus[i*D+k][j*data_w +:data_w];
 			assign c_ibus[i*D+k][j*data_w +:data_w] = c[i][j][k*data_w +:data_w];
 		end
-    end
+	end
 end
 
 for(i=0; i<C*D; i=i+1) begin :cnu_array
@@ -58,7 +58,7 @@ end
 
 for(i=0; i<R*D; i=i+1) begin :vnu_array
 	vnu #(.data_w(data_w), .D(C)) VNU (
-		.l(l[i]),
+		.l(l[i*data_w +:data_w]),
 		.r(v_ibus[i]),
 		.q(v_obus[i]),
 		.dec(dec[i])
@@ -68,15 +68,13 @@ endgenerate
 
 check #(.data_w(data_w), .C(C), .R(R), .D(D)) CH (.dec(dec), .mtx(mtx), .res(check));
 
-//always @(posedge term or posedge rst) begin
-always @(posedge clk) begin
+always @(posedge clk or posedge rst) begin
 	if(rst || term) begin
 		l <= sig;
 		count <= 0;
 		term <= 1'b0;
 		if(rst) err <= 1'b0;
-	end
-	else begin
+	end else begin
 		count <= count + 1'b1;
 		if(count[data_w-1])
 			err <= 1'b1;
@@ -86,6 +84,13 @@ always @(posedge clk) begin
 		end
 	end
 end
-
+/*  
+initial begin
+	$dumpfile ("X.vcd");
+	$dumpvars;
+	$display("\t\ttime,\tclk,\trst,dec");
+	$monitor("%d,\t%b,\t%b,\t%h",$time,clk,rst,dec);
+end
+*/
 endmodule
 

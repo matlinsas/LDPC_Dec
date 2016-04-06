@@ -32,8 +32,8 @@ if(D & 1) begin
     assign m_idx[0][idx_w*2*((DD>>1)-1)+idx_w +:idx_w]=D-1;
 end
 
-for(i=0; i<PL; i=i+1) begin :pipeline
-    for(j=0; (j+1)*2<=ppl_w(DD>>1, i); j=j+1) begin :merge_pairs
+for(i=0; i<PL; i=i+1) begin :build_tree
+    for(j=0; (j+1)*2<=ppl_w(DD>>1, i); j=j+1) begin :cmp_pairs
         compare #(.data_w(data_w), .idx_w(idx_w)) CP (
             .in(pairs[i][data_w*4*j +:data_w*4]),
             .idx_in(m_idx[i][idx_w*4*j +:idx_w*4]),

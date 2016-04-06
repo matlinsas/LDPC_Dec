@@ -1,8 +1,8 @@
 module top(clk, rst, sig, mtx, res, err);
 parameter data_w = 8;
-parameter R = 24;
-parameter C = 12;
-parameter D = 24;
+parameter R = 8;
+parameter C = 4;
+parameter D = 8;
 
 input clk, rst;
 input [R*D*data_w-1:0] sig;
@@ -68,15 +68,19 @@ endgenerate
 
 check #(.data_w(data_w), .C(C), .R(R), .D(D)) CH (.dec(dec), .mtx(mtx), .res(check));
 
-always @(posedge clk or posedge rst) begin
-	if(rst || term) begin
+always @(posedge clk or posedge rst or posedge term) begin
+	if(term)begin
 		l <= sig;
 		count <= 0;
 		term <= 1'b0;
-		if(rst) err <= 1'b0;
+	end else if(rst) begin
+		l <= sig;
+		count <= 0;
+		term <= 1'b0;
+		err <= 1'b0;
 	end else begin
 		count <= count + 1'b1;
-		if(count[data_w-1])
+		if(count[data_w])
 			err <= 1'b1;
 		if(check) begin
 			res <= dec;

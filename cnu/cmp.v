@@ -13,7 +13,7 @@ reg [idx_w-1:0] res_idx [1:0];
 assign out = {res[1], res[0]};
 assign idx_out = {res_idx[1], res_idx[0]};
 
-always @* begin
+always @(*) begin
 	if(in[0 +:data_w]<in[2*data_w +:data_w]) begin
 		res[0] <= in[0 +:data_w];
 		res_idx[0] <= idx_in[0 +:idx_w];

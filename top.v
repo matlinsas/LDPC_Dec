@@ -1,13 +1,13 @@
-module top(clk, rst, sig, mtx, res, err);
+module top(clk, rst, sig, mtx, res, status);
 parameter data_w = 8;
-parameter R = 8;
-parameter C = 4;
-parameter D = 8;
+parameter R = 24;
+parameter C = 12;
+parameter D = 24;
 
 input clk, rst;
 input [R*D*data_w-1:0] sig;
 input [C*R*data_w-1:0] mtx;
-output reg err;
+output reg [1:0] status;
 output reg [R*D-1:0] res;
 
 reg term;
@@ -31,7 +31,7 @@ generate
 for(i=0; i<C; i=i+1) begin :column
 	for(j=0; j<R; j=j+1) begin :row
 		cyc_shift #(.D(D), .data_w(data_w)) CYC(
-			.shift(mtx[(i*R+j)*data_w +:data_w]%D),
+			.shift(mtx[(i*R+j)*data_w +:data_w]),
 			.vtc(vtc[i][j]),
 			.c(c[i][j]),
 			.ctv(ctv[i][j]),
@@ -50,7 +50,7 @@ end
 for(i=0; i<C*D; i=i+1) begin :cnu_array
 	cnu #(.data_w(data_w), .D(R)) CNU (
 		.clk(clk),
-		.rst(rst),
+		.rst(rst | term),
 		.q(c_ibus[i]),
 		.r(c_obus[i])
 	);
@@ -69,20 +69,20 @@ endgenerate
 check #(.data_w(data_w), .C(C), .R(R), .D(D)) CH (.dec(dec), .mtx(mtx), .res(check));
 
 always @(posedge clk or posedge rst or posedge term) begin
-	if(term)begin
+	if(rst) begin
+		l <= sig;
+		res <= 0;
+		count <= 0;
+		term <= 1'b0;
+		status <= 2'b0;
+	end else if(term)begin
 		l <= sig;
 		count <= 0;
 		term <= 1'b0;
-	end else if(rst) begin
-		l <= sig;
-		count <= 0;
-		term <= 1'b0;
-		err <= 1'b0;
 	end else begin
 		count <= count + 1'b1;
-		if(count[data_w])
-			err <= 1'b1;
-		if(check) begin
+		status <= {count[data_w], ~check};
+		if(count[data_w] || ~check) begin
 			res <= dec;
 			term <= 1'b1;
 		end

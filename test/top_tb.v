@@ -7,9 +7,9 @@ reg [C*R*data_w-1:0] m;
 reg [R*D*data_w-1:0] l;
 wire [R*D-1:0] s;
 reg clk, rst;
-wire err;
+wire [1:0] status;
 
-top #(.C(C), .R(R), .D(D), .data_w(data_w)) X (clk,rst,l,m,s,err);
+top #(.C(C), .R(R), .D(D), .data_w(data_w)) X (clk,rst,l,m,s,status);
 
 //A set of test data
 //WiMax 1/2 rate,576 bits encoded random data
@@ -21,7 +21,6 @@ initial begin
 	clk = 0;
 	#5 rst = 1;
 	#10 rst = 0;
-	#1000 $finish;
 end
 
 always

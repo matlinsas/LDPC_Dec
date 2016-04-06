@@ -24,7 +24,7 @@ for(i=0; i<D; i=i+1) begin :get_abs
 end
 endgenerate
 
-merge_ppl #(.D(D), .data_w(data_w), .idx_w(idx_w)) MPL (
+cmp_tree #(.D(D), .data_w(data_w), .idx_w(idx_w)) CPT (
 	.clk(clk),
 	.rst(rst), 
 	.in(qmag), 

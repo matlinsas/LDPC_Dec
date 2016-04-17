@@ -1,8 +1,3 @@
-`include "cnu.v"
-`include "vnu.v"
-`include "check.v"
-`include "cyc_shift.v"
-
 module ldpc_core(en, clk, rst, sig, mtx, res, status);
 parameter data_w = 8;
 parameter R = 24;
@@ -52,9 +47,9 @@ for(i=0; i<C; i=i+1) begin :column
 	end
 end
 
-for(i=0; i<C*D; i=i+1) begin :cnu_array
+for(i=0; i<1024; i=i+1) begin :cnu_array_a
 	cnu #(.data_w(data_w), .D(R)) CNU (
-        .en(en),
+		.en(en),
 		.clk(clk),
 		.rst(rst | term),
 		.q(c_ibus[i]),
@@ -62,7 +57,35 @@ for(i=0; i<C*D; i=i+1) begin :cnu_array
 	);
 end
 
-for(i=0; i<R*D; i=i+1) begin :vnu_array
+for(i=1024; i<C*D; i=i+1) begin :cnu_array_b
+	cnu #(.data_w(data_w), .D(R)) CNU (
+		.en(en),
+		.clk(clk),
+		.rst(rst | term),
+		.q(c_ibus[i]),
+		.r(c_obus[i])
+	);
+end
+
+for(i=0; i<1024; i=i+1) begin :vnu_array_a
+	vnu #(.data_w(data_w), .D(C)) VNU (
+		.l(l[i*data_w +:data_w]),
+		.r(v_ibus[i]),
+		.q(v_obus[i]),
+		.dec(dec[i])
+	);
+end
+
+for(i=1024; i<2048; i=i+1) begin :vnu_array_b
+	vnu #(.data_w(data_w), .D(C)) VNU (
+		.l(l[i*data_w +:data_w]),
+		.r(v_ibus[i]),
+		.q(v_obus[i]),
+		.dec(dec[i])
+	);
+end
+
+for(i=2048; i<R*D; i=i+1) begin :vnu_array_c
 	vnu #(.data_w(data_w), .D(C)) VNU (
 		.l(l[i*data_w +:data_w]),
 		.r(v_ibus[i]),

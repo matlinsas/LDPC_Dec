@@ -1,6 +1,3 @@
-`include "abs.v"
-`include "cmp_tree.v"
-
 module cnu(en, clk, rst, q, r);
 parameter D=8;
 parameter data_w = 8;

@@ -3,7 +3,7 @@
 `include "check.v"
 `include "cyc_shift.v"
 
-module top(en, clk, rst, sig, mtx, res, status);
+module ldpc_core(en, clk, rst, sig, mtx, res, status);
 parameter data_w = 8;
 parameter R = 24;
 parameter C = 12;

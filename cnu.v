@@ -1,9 +1,12 @@
-module cnu(clk, rst, q, r);
+`include "abs.v"
+`include "cmp_tree.v"
+
+module cnu(en, clk, rst, q, r);
 parameter D=8;
 parameter data_w = 8;
 localparam idx_w = log2(D);
 
-input	clk, rst;
+input	clk, rst, en;
 input [data_w*D-1:0] q;
 output [data_w*D-1:0] r;
 
@@ -25,6 +28,7 @@ end
 endgenerate
 
 cmp_tree #(.D(D), .data_w(data_w), .idx_w(idx_w)) CPT (
+    .en(en),
 	.clk(clk),
 	.rst(rst), 
 	.in(qmag), 

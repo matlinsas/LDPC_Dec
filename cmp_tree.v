@@ -1,11 +1,13 @@
-module cmp_tree(clk, rst, in, min, min2, min_idx);
+`include "cmp.v"
+
+module cmp_tree(en, clk, rst, in, min, min2, min_idx);
 parameter data_w = 8;
 parameter idx_w = 8;
 parameter D = 5;
 localparam DD = (D & 1)?(D + 1):D;
 localparam PL = ppl_l(DD>>1);
 
-input clk, rst;
+input clk, rst, en;
 input [data_w*D-1:0] in;
 output reg [data_w-1:0] min, min2;
 output reg [idx_w-1:0] min_idx;
@@ -55,7 +57,7 @@ always @(posedge clk or posedge rst) begin
         min2 <= 0;
         min_idx <= 0;
     end
-    else begin
+    else if(en) begin
         min <= pairs[PL][data_w-1:0];
         min_idx <= m_idx[PL][idx_w-1:0];
         min2 <= pairs[PL][data_w*2-1:data_w];

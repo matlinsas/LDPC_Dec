@@ -1,10 +1,15 @@
-module top(clk, rst, sig, mtx, res, status);
+`include "cnu.v"
+`include "vnu.v"
+`include "check.v"
+`include "cyc_shift.v"
+
+module top(en, clk, rst, sig, mtx, res, status);
 parameter data_w = 8;
 parameter R = 24;
 parameter C = 12;
 parameter D = 24;
 
-input clk, rst;
+input clk, rst, en;
 input [R*D*data_w-1:0] sig;
 input [C*R*data_w-1:0] mtx;
 output reg [1:0] status;
@@ -49,6 +54,7 @@ end
 
 for(i=0; i<C*D; i=i+1) begin :cnu_array
 	cnu #(.data_w(data_w), .D(R)) CNU (
+        .en(en),
 		.clk(clk),
 		.rst(rst | term),
 		.q(c_ibus[i]),
@@ -76,25 +82,21 @@ always @(posedge clk or posedge rst or posedge term) begin
 		term <= 1'b0;
 		status <= 2'b0;
 	end else if(term)begin
-		l <= sig;
-		count <= 0;
-		term <= 1'b0;
+        if(en) begin
+            l <= sig;
+            count <= 0;
+            term <= 1'b0;
+        end
 	end else begin
-		count <= count + 1'b1;
-		status <= {count[data_w], ~check};
-		if(count[data_w] || ~check) begin
-			res <= dec;
-			term <= 1'b1;
-		end
-	end
+        if(en) begin
+            count <= count + 1'b1;
+            status <= {count[data_w], ~check};
+            if(count[data_w] || ~check) begin
+                res <= dec;
+                term <= 1'b1;
+            end
+        end
+    end
 end
-/*  
-initial begin
-	$dumpfile ("X.vcd");
-	$dumpvars;
-	$display("\t\ttime,\tclk,\trst,dec");
-	$monitor("%d,\t%b,\t%b,\t%h",$time,clk,rst,dec);
-end
-*/
 endmodule
 

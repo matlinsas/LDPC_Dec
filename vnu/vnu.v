@@ -1,13 +1,12 @@
 module vnu(l, r, q, dec);
 parameter data_w = 8;
-parameter idx_w = 8;
 parameter D=5;
 localparam ext_w = log2(D);
 localparam sum_w = data_w + ext_w;
 localparam TH = tree_h(D+1);
 
 input 	[data_w-1:0] l;
-input		[data_w*D-1:0] r;
+input	[data_w*D-1:0] r;
 output	[data_w*D-1:0] q;
 output	dec;
 
@@ -42,7 +41,7 @@ end
 assign s = tree[TH][0 +:sum_w] + tree[TH][sum_w +:sum_w];
 
 for(i=0; i<D; i=i+1)begin :calc_q
-	assign q[i*data_w +:data_w] = s - r[i*data_w +:data_w];
+	assign q[i*data_w +:data_w] = (s - tree[0][i*sum_w +:sum_w]) >> ext_w;
 end
 endgenerate
 

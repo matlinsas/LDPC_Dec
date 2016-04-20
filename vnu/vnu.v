@@ -7,12 +7,12 @@ localparam sum_w = data_w + ext_w;
 localparam TH = tree_h(D+1);
 
 input 	[data_w-1:0] l;
-input	[data_w*D-1:0] r;
+input		[data_w*D-1:0] r;
 output	[data_w*D-1:0] q;
 output	dec;
 
 wire 	[sum_w-1:0] s;
-wire 	[sum_w*D-1:0] tree[TH:0];
+wire 	[sum_w*(D+1)-1:0] tree[TH:0];
 
 genvar i, j;
 
@@ -21,7 +21,7 @@ for(i=0; i<D; i=i+1) begin :init
 	assign tree[0][i*sum_w +:sum_w] = {{ext_w{r[(i+1)*data_w-1]}}, r[i*data_w +:data_w]};
 end
 
-assign tree[0][D] = {{ext_w{l[data_w-1]}}, l};
+assign tree[0][D*sum_w +:sum_w] = {{ext_w{l[data_w-1]}}, l};
 
 for(i=0; i<TH; i=i+1) begin :csa_tree
 	for(j=2; j<tree_w(D+1, i); j=j+3)begin :add

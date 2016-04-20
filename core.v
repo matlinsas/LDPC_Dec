@@ -47,51 +47,27 @@ for(i=0; i<C; i=i+1) begin :column
 	end
 end
 
-for(i=0; i<1024; i=i+1) begin :cnu_array_a
-	cnu #(.data_w(data_w), .D(R)) CNU (
-		.en(en),
-		.clk(clk),
-		.rst(rst | term),
-		.q(c_ibus[i]),
-		.r(c_obus[i])
-	);
+for(j=0; j<C*D; j=j+1024) begin :iter0
+	for(i=j; i<( (j+1023<C*D)?(j+1023):(C*D) ); i=i+1) begin :cnu_array
+		cnu #(.data_w(data_w), .D(R)) CNU (
+			.en(en),
+			.clk(clk),
+			.rst(rst | term),
+			.q(c_ibus[i]),
+			.r(c_obus[i])
+		);
+	end
 end
 
-for(i=1024; i<C*D; i=i+1) begin :cnu_array_b
-	cnu #(.data_w(data_w), .D(R)) CNU (
-		.en(en),
-		.clk(clk),
-		.rst(rst | term),
-		.q(c_ibus[i]),
-		.r(c_obus[i])
-	);
-end
-
-for(i=0; i<1024; i=i+1) begin :vnu_array_a
-	vnu #(.data_w(data_w), .D(C)) VNU (
-		.l(l[i*data_w +:data_w]),
-		.r(v_ibus[i]),
-		.q(v_obus[i]),
-		.dec(dec[i])
-	);
-end
-
-for(i=1024; i<2048; i=i+1) begin :vnu_array_b
-	vnu #(.data_w(data_w), .D(C)) VNU (
-		.l(l[i*data_w +:data_w]),
-		.r(v_ibus[i]),
-		.q(v_obus[i]),
-		.dec(dec[i])
-	);
-end
-
-for(i=2048; i<R*D; i=i+1) begin :vnu_array_c
-	vnu #(.data_w(data_w), .D(C)) VNU (
-		.l(l[i*data_w +:data_w]),
-		.r(v_ibus[i]),
-		.q(v_obus[i]),
-		.dec(dec[i])
-	);
+for(j=0; j<R*D; j=j+1024) begin :iter1
+	for(i=j; i<( (j+1023<R*D)?(j+1023):(R*D) ); i=i+1) begin :vnu_array
+		vnu #(.data_w(data_w), .D(C)) VNU (
+			.l(l[i*data_w +:data_w]),
+			.r(v_ibus[i]),
+			.q(v_obus[i]),
+			.dec(dec[i])
+		);
+	end
 end
 endgenerate
 

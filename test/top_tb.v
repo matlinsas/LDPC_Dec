@@ -9,7 +9,7 @@ wire [R*D-1:0] s;
 reg clk, rst;
 wire [1:0] status;
 
-top #(.C(C), .R(R), .D(D), .data_w(data_w)) X (1'b1,clk,rst,l,m,s,status);
+ldpc_core #(.C(C), .R(R), .D(D), .data_w(data_w)) X (1'b1,clk,rst,l,m,s,status);
 
 //A set of test data
 //WiMax 1/2 rate,576 bits encoded random data

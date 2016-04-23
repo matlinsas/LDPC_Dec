@@ -11,6 +11,6 @@ wire [data_w-1:0] t;
 
 assign t = A^B;
 assign S = t^Ci;
-assign Co = ((A & B) | (Ci & t)) << 1;
+assign Co = ((A & B) | (Ci & t)) <<< 1;
 
 endmodule

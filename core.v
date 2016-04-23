@@ -61,7 +61,7 @@ end
 
 for(j=0; j<R*D; j=j+1024) begin :iter1
 	for(i=j; i<( (j+1023<R*D)?(j+1023):(R*D) ); i=i+1) begin :vnu_array
-		vnu #(.data_w(data_w), .D(C)) VNU (
+		vnu #(.data_w(data_w), .D(C), .N(6)) VNU (
 			.l(l[i*data_w +:data_w]),
 			.r(v_ibus[i]),
 			.q(v_obus[i]),

@@ -1,7 +1,8 @@
 module vnu(l, r, q, dec);
 parameter data_w = 8;
-parameter D=5;
-localparam ext_w = log2(D);
+parameter D=12;
+parameter N=6;
+localparam ext_w = log2(N);
 localparam sum_w = data_w + ext_w;
 localparam TH = tree_h(D+1);
 
@@ -41,7 +42,7 @@ end
 assign s = tree[TH][0 +:sum_w] + tree[TH][sum_w +:sum_w];
 
 for(i=0; i<D; i=i+1)begin :calc_q
-	assign q[i*data_w +:data_w] = (s - tree[0][i*sum_w +:sum_w]) >> ext_w;
+	sat #(.IN_SIZE(sum_w-1), .OUT_SIZE(data_w-1)) SAT (s - tree[0][i*sum_w +:sum_w], q[i*data_w +:data_w]);
 end
 endgenerate
 

@@ -1,3 +1,7 @@
+//`include "cnu/cnu.v"
+//`include "vnu/vnu.v"
+//`include "cyc_shift.v"
+//`include "check.v"
 module ldpc_core(en, clk, rst, sig, mtx, res, status);
 parameter data_w = 8;
 parameter R = 24;

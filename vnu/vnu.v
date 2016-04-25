@@ -1,3 +1,5 @@
+//`include "fadd.v"
+//`include "sat.v"
 module vnu(l, r, q, dec);
 parameter data_w = 8;
 parameter D=12;

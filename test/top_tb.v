@@ -21,6 +21,7 @@ initial begin
 	clk = 0;
 	#5 rst = 1;
 	#10 rst = 0;
+	$monitor("%b",s);
 end
 
 always

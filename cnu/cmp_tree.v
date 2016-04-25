@@ -1,3 +1,4 @@
+//`include "cmp.v"
 module cmp_tree(en, clk, rst, in, min, min2, min_idx);
 parameter data_w = 8;
 parameter idx_w = 8;

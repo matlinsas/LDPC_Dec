@@ -1,7 +1,11 @@
-//`include "cnu/cnu.v"
-//`include "vnu/vnu.v"
-//`include "cyc_shift.v"
-//`include "check.v"
+`define SIMULATION
+`ifdef SIMULATION
+    `include "cnu/cnu.v"
+    `include "vnu/vnu.v"
+    `include "cyc_shift.v"
+    `include "check.v"
+`endif
+
 module ldpc_core(en, clk, rst, sig, mtx, res, status);
 parameter data_w = 8;
 parameter R = 24;
@@ -101,5 +105,15 @@ always @(posedge clk or posedge rst or posedge term) begin
         end
     end
 end
+
+//---------------- TEST -----------------------
+integer ones, idx;
+always @* begin
+    ones = 0;
+    for (idx =0; idx < (D*R); idx = idx +1) begin
+        ones = ones + dec[idx];
+    end
+end 
+
 endmodule
 

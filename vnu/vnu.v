@@ -1,5 +1,7 @@
-//`include "fadd.v"
-//`include "sat.v"
+`ifdef SIMULATION
+    `include "fadd.v"
+    `include "sat.v"
+`endif
 module vnu(l, r, q, dec);
 parameter data_w = 8;
 parameter D=12;

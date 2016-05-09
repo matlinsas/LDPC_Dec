@@ -7,10 +7,10 @@
 `endif
 
 module ldpc_core(en, clk, rst, sig, mtx, res, status);
-parameter data_w = 8;
+parameter data_w = 5;
 parameter R = 24;
 parameter C = 12;
-parameter D = 24;
+parameter D = 96;
 
 input clk, rst, en;
 input [R*D*data_w-1:0] sig;
@@ -56,7 +56,7 @@ for(i=0; i<C; i=i+1) begin :column
 end
 
 for(j=0; j<C*D; j=j+1024) begin :iter0
-	for(i=j; i<( (j+1023<C*D)?(j+1023):(C*D) ); i=i+1) begin :cnu_array
+	for(i=j; i<( (j+1024<C*D)?(j+1024):(C*D) ); i=i+1) begin :cnu_array
 		cnu #(.data_w(data_w), .D(R)) CNU (
 			.en(en),
 			.clk(clk),
@@ -68,7 +68,7 @@ for(j=0; j<C*D; j=j+1024) begin :iter0
 end
 
 for(j=0; j<R*D; j=j+1024) begin :iter1
-	for(i=j; i<( (j+1023<R*D)?(j+1023):(R*D) ); i=i+1) begin :vnu_array
+	for(i=j; i<( (j+1024<R*D)?(j+1024):(R*D) ); i=i+1) begin :vnu_array
 		vnu #(.data_w(data_w), .D(C), .N(6)) VNU (
 			.l(l[i*data_w +:data_w]),
 			.r(v_ibus[i]),

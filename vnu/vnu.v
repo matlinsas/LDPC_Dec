@@ -1,18 +1,17 @@
 `ifdef SIMULATION
     `include "fadd.v"
-    `include "sat.v"
 `endif
 module vnu(l, r, q, dec);
 parameter data_w = 8;
 parameter D=12;
 parameter N=6;
-localparam ext_w = log2(N);
+parameter ext_w = 3;
 localparam sum_w = data_w + ext_w;
 localparam TH = tree_h(D+1);
 
 input 	[data_w-1:0] l;
 input	[data_w*D-1:0] r;
-output	[data_w*D-1:0] q;
+output	[sum_w*D-1:0] q;
 output	dec;
 
 wire 	[sum_w-1:0] s;
@@ -46,22 +45,12 @@ end
 assign s = tree[TH][0 +:sum_w] + tree[TH][sum_w +:sum_w];
 
 for(i=0; i<D; i=i+1)begin :calc_q
-	sat #(.IN_SIZE(sum_w-1), .OUT_SIZE(data_w-1)) SAT (s - tree[0][i*sum_w +:sum_w], q[i*data_w +:data_w]);
+    assign q[i*sum_w +:sum_w] = s - tree[0][i*sum_w +:sum_w];
 end
 endgenerate
 
 assign dec = s[sum_w-1];
 //--------------------
-function integer log2;
-	input integer x;
-	begin
-		log2 = 0;
-		while (x) begin
-			log2 = log2 + 1;
-			x = x>>1;
-		end
-	end
-endfunction
 
 function integer next_n;
     input integer n;

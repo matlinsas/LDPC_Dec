@@ -1,15 +1,18 @@
 `ifdef SIMULATION
     `include "abs.v"
+    `include "sat.v"
     `include "cmp_tree.v"
 `endif
 module cnu(en, clk, rst, q, r);
 parameter D=8;
-parameter data_w = 8;
-localparam idx_w = log2(D);
+parameter res_w = 8;
+parameter ext_w = 3;
+parameter idx_w = 3;
+localparam  data_w = res_w + ext_w;
 
 input	clk, rst, en;
 input [data_w*D-1:0] q;
-output [data_w*D-1:0] r;
+output [res_w*D-1:0] r;
 
 wire	[data_w-1:0] min, min2;
 wire	[data_w+1:0] tmin, tmin2;
@@ -55,22 +58,16 @@ assign tmin2 = {2'b0, min2};
 
 generate
 for(i=0; i<D; i=i+1) begin :calc_r
-	assign r[i*data_w +:data_w] = (min_idx == i)?
-	((rsgn^qsgn2[i])?(-(((tmin2<<1)+tmin2)>>2)):(((tmin2<<1)+tmin2)>>2)):
-	((rsgn^qsgn2[i])?(-(((tmin<<1)+tmin)>>2)):(((tmin<<1)+tmin)>>2));
+    sat #(.IN_SIZE(data_w+1), .OUT_SIZE(res_w-1)) SAT (
+        .sat_in(
+            (min_idx == i)?
+            ((rsgn^qsgn2[i])?(-(((tmin2<<1)+tmin2)>>2)):(((tmin2<<1)+tmin2)>>2)):
+            ((rsgn^qsgn2[i])?(-(((tmin<<1)+tmin)>>2)):(((tmin<<1)+tmin)>>2))
+        ),
+        .sat_out(r[i*res_w +:res_w])
+    );
 end
 endgenerate
-//-----------
-function integer log2;
-	input integer x;
-	begin
-		log2 = 0;
-		while (x) begin
-			log2 = log2 + 1;
-			x = x>>1;
-		end
-	end
-endfunction
 
 endmodule
 

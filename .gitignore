@@ -63,3 +63,10 @@ _autosave-*
 # Exported BOM files
 *.xml
 *.csv
+
+# nc verilog
+.simvision
+INCA_libs
+ncverilog.key
+waves.shm
+

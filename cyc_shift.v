@@ -1,10 +1,11 @@
 module cyc_shift(shift, vtc, ctv, c ,v);
 parameter data_w = 8;
 parameter ext_w = 3;
+parameter mtx_w = 8;
 parameter D = 5;
 localparam temp_w = data_w + ext_w;
 
-input [data_w-1:0] shift;
+input [mtx_w-1:0] shift;
 input [data_w*D-1:0] ctv;
 input [temp_w*D-1:0] vtc;
 output reg [data_w*D-1:0] v;
@@ -15,7 +16,7 @@ wire [data_w-1:0] temp;
 assign temp = shift;//>>2;
 
 always @(*) begin
-	if(shift == {data_w{1'b1}})
+	if(shift == {mtx_w{1'b1}})
 	begin
 		c <= {D{1'b0,{(temp_w-1){1'b1}}}};
 		v <= {D*data_w{1'b0}};

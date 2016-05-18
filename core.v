@@ -8,6 +8,7 @@
 
 module ldpc_core(en, clk, rst, sig, mtx, res, status);
 parameter data_w = 5;
+parameter mtx_w = 8;
 parameter R = 24;
 parameter C = 12;
 parameter D = 96;
@@ -18,7 +19,7 @@ localparam temp_w = data_w + ext_w;
 
 input clk, rst, en;
 input [R*D*data_w-1:0] sig;
-input [C*R*data_w-1:0] mtx;
+input [C*R*mtx_w-1:0] mtx;
 output reg [1:0] status;
 output reg [R*D-1:0] res;
 
@@ -42,8 +43,8 @@ genvar i,j,k;
 generate
 for(i=0; i<C; i=i+1) begin :column
 	for(j=0; j<R; j=j+1) begin :row
-		cyc_shift #(.D(D), .data_w(data_w), .ext_w(ext_w)) CYC(
-			.shift(mtx[(i*R+j)*data_w +:data_w]),
+		cyc_shift #(.D(D), .data_w(data_w), .ext_w(ext_w), .mtx_w(mtx_w)) CYC(
+			.shift(mtx[(i*R+j)*mtx_w +:mtx_w]),
 			.vtc(vtc[i][j]),
 			.c(c[i][j]),
 			.ctv(ctv[i][j]),
@@ -83,7 +84,7 @@ for(j=0; j<R*D; j=j+1024) begin :iter1
 end
 endgenerate
 
-check #(.data_w(data_w), .C(C), .R(R), .D(D)) CH (.dec(dec), .mtx(mtx), .res(check));
+check #(.mtx_w(mtx_w), .C(C), .R(R), .D(D)) CH (.dec(dec), .mtx(mtx), .res(check));
 
 always @(posedge clk or posedge rst or posedge term) begin
 	if(rst) begin

@@ -25,8 +25,8 @@ for(i=0; i<(D>>1); i=i+1) begin :generate_pairs
     assign pairs[0][i*2*data_w +:data_w*2] = cmp[i]?
         {in[data_w*2*i +:data_w], in[data_w*(2*i+1) +:data_w]}:
         {in[data_w*(2*i+1) +:data_w], in[data_w*2*i +:data_w]};
-    assign m_idx[0][i*2*idx_w +:idx_w] = cmp[i]? (2*i):(2*i+1);
-    assign m_idx[0][i*2*idx_w+idx_w +:idx_w] = cmp[i]? (2*i+1):(2*i);
+    assign m_idx[0][i*2*idx_w +:idx_w] = cmp[i]? (2*i+1):(2*i);
+    assign m_idx[0][i*2*idx_w+idx_w +:idx_w] = cmp[i]? (2*i):(2*i+1);
 end
 
 if(D & 1) begin

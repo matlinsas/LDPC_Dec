@@ -1,7 +1,7 @@
 `ifdef SIMULATION
     `include "fadd.v"
 `endif
-module vnu(l, r, q, dec);
+module vnu(l, r, q, dec,test);
 parameter data_w = 8;
 parameter D=12;
 parameter N=6;
@@ -13,6 +13,7 @@ input 	[data_w-1:0] l;
 input	[data_w*D-1:0] r;
 output	[sum_w*D-1:0] q;
 output	dec;
+output  [sum_w-1:0] test;
 
 wire 	[sum_w-1:0] s;
 wire 	[sum_w*(D+1)-1:0] tree[TH:0];
@@ -50,6 +51,8 @@ end
 endgenerate
 
 assign dec = s[sum_w-1];
+//--------test---------
+assign test = s;
 //--------------------
 
 function integer next_n;

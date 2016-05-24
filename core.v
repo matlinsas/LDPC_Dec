@@ -16,6 +16,7 @@ parameter N = 6;
 localparam ext_w = log2(N);
 localparam idx_w = log2(R);
 localparam temp_w = data_w + ext_w;
+localparam count_w = 6;
 
 input clk, rst, en;
 input [R*D*data_w-1:0] sig;
@@ -25,7 +26,7 @@ output reg [R*D-1:0] res;
 
 reg term;
 reg [R*D*data_w-1:0] l;
-reg [data_w:0] count;
+reg [count_w-1:0] count;
 
 wire check;
 wire [R*D-1:0] dec;
@@ -37,6 +38,7 @@ wire [temp_w*R-1:0] c_ibus [C*D-1:0];
 wire [data_w*R-1:0] c_obus [C*D-1:0];
 wire [data_w*C-1:0] v_ibus [R*D-1:0];
 wire [temp_w*C-1:0] v_obus [R*D-1:0];
+wire [temp_w-1:0] test_bus[R*D-1:0];
 
 genvar i,j,k;
 
@@ -78,7 +80,8 @@ for(j=0; j<R*D; j=j+1024) begin :iter1
 			.l(l[i*data_w +:data_w]),
 			.r(v_ibus[i]),
 			.q(v_obus[i]),
-			.dec(dec[i])
+			.dec(dec[i]),
+            .test(test_bus[i])
 		);
 	end
 end
@@ -102,8 +105,8 @@ always @(posedge clk or posedge rst or posedge term) begin
 	end else begin
         if(en) begin
             count <= count + 1'b1;
-            status <= {count[data_w], ~check};
-            if(count[data_w] || ~check) begin
+            status <= {count[count_w-1], ~check};
+            if(count[count_w-1] || ~check) begin
                 res <= dec;
                 term <= 1'b1;
             end

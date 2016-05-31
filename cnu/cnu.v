@@ -15,7 +15,7 @@ input [data_w*D-1:0] q;
 output [res_w*D-1:0] r;
 
 wire	[data_w-1:0] min, min2;
-wire	[data_w+1:0] tmin, tmin2;
+wire	[data_w:0] tmin, tmin2;
 
 wire	[data_w*D-1:0] qmag;
 wire	[idx_w-1:0] min_idx;
@@ -53,18 +53,15 @@ always @(posedge clk or posedge rst) begin
 	end
 end
 
-assign tmin = {2'b0, min};
-assign tmin2 = {2'b0, min2};
+assign tmin = {1'b0, min};
+assign tmin2 = {1'b0, min2};
 
 generate
 for(i=0; i<D; i=i+1) begin :calc_r
-    sat #(.IN_SIZE(data_w+1), .OUT_SIZE(res_w-1)) SAT (
-        .sat_in(
-            (min_idx == i)?
-            ((rsgn^qsgn2[i])?(-(((tmin2<<1)+tmin2)>>2)):(((tmin2<<1)+tmin2)>>2)):
-            ((rsgn^qsgn2[i])?(-(((tmin<<1)+tmin)>>2)):(((tmin<<1)+tmin)>>2))
-        ),
-        .sat_out(r[i*res_w +:res_w])
+    sat #(.IN_SIZE(data_w), .OUT_SIZE(res_w-1)) SAT (
+        .sat_in( (min_idx == i)?((tmin2<<1)+tmin2):((tmin<<1)+tmin) ),
+        .sat_sgn( rsgn^qsgn2[i] ),
+        .sat_out( r[i*res_w +:res_w] )
     );
 end
 endgenerate

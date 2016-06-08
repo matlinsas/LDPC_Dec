@@ -1,3 +1,5 @@
+`define SIMULATION
+
 module tb;
 parameter data_w=5;
 parameter mtx_w=8;

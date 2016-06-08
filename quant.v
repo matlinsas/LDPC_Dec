@@ -49,7 +49,7 @@ module quant(snr_idx, frac_w, data_in, llr);
   end
   
   assign int_w = data_w - frac_w;
-  assign noise = {{10{data_in[15]}}, data_in} * sqrt_snr;
+  assign noise = data_in * sqrt_snr;
   assign rec = one + {{2{noise[25]}}, noise[25:10]};
   assign llr_temp = ({{10{rec[17]}}, rec} <<< 11);
   assign llr_div = llr_temp[27] ? -(-llr_temp/snr):llr_temp/snr;

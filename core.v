@@ -1,4 +1,3 @@
-`define SIMULATION
 `ifdef SIMULATION
     `include "cnu/cnu.v"
     `include "vnu/vnu.v"

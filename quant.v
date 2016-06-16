@@ -58,13 +58,13 @@ module quant(snr_idx, frac_w, data_in, llr);
   assign llr_sat = (llr_div < llr_pmax && llr_div > llr_nmax) ? llr_div:((llr_div[27])?llr_nmax:llr_pmax);
   assign llr_shift = llr_sat >>> (5'd11-frac_w);
   assign llr = frac_w[4] ? llr_shift <<< (-frac_w) : llr_shift;
-  
+ /* 
   initial begin
     $monitor(
       "%b\n%b\n%d\n%d\n%d\n%b\n%b\n%b\n%b\n%b\n%b\n%b\n%b\n",
       llr_pmax, llr_nmax, int_w, sqrt_snr, snr, data_in, noise, rec, llr_temp, llr_div, llr_sat, llr_shift, llr
     );
   end
-        
+  */      
 endmodule
 

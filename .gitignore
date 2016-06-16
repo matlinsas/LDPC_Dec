@@ -70,3 +70,13 @@ INCA_libs
 ncverilog.key
 waves.shm
 
+# vcs
+.vcsmx_rebuild
+csrc/
+simv
+simv.daidir/
+
+#gng
+gng
+
+

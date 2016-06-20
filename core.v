@@ -23,7 +23,6 @@ input [C*R*mtx_w-1:0] mtx;
 output reg term;
 output reg [R*D-1:0] res;
 
-reg term;
 reg [R*D*data_w-1:0] l;
 reg [count_w-1:0] count;
 
@@ -93,7 +92,6 @@ always @(posedge clk or posedge rst or posedge term) begin
 		l <= sig;
 		res <= 0;
 		count <= 0;
-		term <= 1'b0;
 		term <= 1'b0;
 	end else if(term)begin
         if(en) begin

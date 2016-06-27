@@ -36,7 +36,7 @@ wire [temp_w*R-1:0] c_ibus [C*D-1:0];
 wire [data_w*R-1:0] c_obus [C*D-1:0];
 wire [data_w*C-1:0] v_ibus [R*D-1:0];
 wire [temp_w*C-1:0] v_obus [R*D-1:0];
-wire [temp_w-1:0] test_bus[R*D-1:0];
+wire signed [temp_w-1:0] test_bus[R*D-1:0];
 
 genvar i,j,k;
 

@@ -15,7 +15,7 @@ input [data_w*D-1:0] q;
 output [res_w*D-1:0] r;
 
 wire	[data_w-1:0] min, min2;
-wire	[data_w+1:0] tmin, tmin2;
+wire signed [data_w+1:0] tmin, tmin2;
 
 wire	[data_w*D-1:0] qmag;
 wire	[idx_w-1:0] min_idx;
@@ -61,8 +61,8 @@ for(i=0; i<D; i=i+1) begin :calc_r
     sat #(.IN_SIZE(data_w+1), .OUT_SIZE(res_w-1)) SAT (
         .sat_in(
             (min_idx == i)?
-            ( (rsgn^qsgn2[i])?( (-((tmin2<<1)+tmin2))>>2 ):( ((tmin2<<1)+tmin2)>>2 ) ):
-            ( (rsgn^qsgn2[i])?( (-((tmin<<1)+tmin))>>2 ):( ((tmin<<1)+tmin)>>2 ) )
+            ( (rsgn^qsgn2[i])?( $signed(-((tmin2<<<1)+tmin2))>>>2 ):( $signed((tmin2<<<1)+tmin2)>>>2 ) ):
+            ( (rsgn^qsgn2[i])?( $signed(-((tmin<<<1)+tmin))>>>2 ):( $signed((tmin<<<1)+tmin)>>>2 ) )
         ),
         .sat_out(r[i*res_w +:res_w])
     );

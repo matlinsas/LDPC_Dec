@@ -125,13 +125,22 @@ function integer log2;
 endfunction
 
 //---------------- TEST -----------------------
-integer ones, idx;
+integer ones, idx, f1;
+initial begin
+    f1 = $fopen("vnu_out.txt","w");
+end
 always @* begin
     ones = 0;
     for (idx =0; idx < (D*R); idx = idx +1) begin
         ones = ones + dec[idx];
     end
 end 
+always @(posedge clk) begin
+    for (idx=0; idx < (D*R); idx = idx + 1) begin
+        $fwrite(f1, "%d ", test_bus[idx]);
+    end
+    $fwrite(f1, "\n");
+end
 
 endmodule
 

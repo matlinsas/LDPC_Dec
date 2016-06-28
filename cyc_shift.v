@@ -18,12 +18,10 @@ assign temp = shift;//>>2;
 assign c = (shift == {mtx_w{1'b1}})?
     ( {D{1'b0,{(temp_w-1){1'b1}}}} ):
     ( {vtc, vtc} >> (temp*temp_w) );
-    //( (vtc>>(temp*temp_w)) | (vtc<<((D-temp)*temp_w)) );
 
 assign v = (shift == {mtx_w{1'b1}})?
     ( {D*data_w{1'b0}} ):
-    ( {ctv, ctv} >> (temp*data_w) );
-    //( (ctv>>(temp*data_w)) | (ctv<<((D-temp)*data_w)) );
+    ( {ctv, ctv} >> ((D-temp)*data_w) );
 
 endmodule 
 

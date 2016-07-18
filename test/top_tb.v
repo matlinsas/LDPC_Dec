@@ -11,8 +11,10 @@ reg [R*D*data_w-1:0] l;
 wire [R*D-1:0] s;
 reg clk, rst;
 wire term;
+reg en;
+reg [3:0] cnt;
 
-ldpc_core #(.C(C), .R(R), .D(D), .N(6), .data_w(data_w), .mtx_w(mtx_w)) X (1'b1,clk,rst,l,m,s,term);
+ldpc_core #(.C(C), .R(R), .D(D), .N(6), .data_w(data_w), .mtx_w(mtx_w)) X (en,clk,rst,l,m,s,term);
 
 initial begin
 	m={
@@ -36,13 +38,25 @@ initial begin
 end
 
 initial begin
+    cnt = 0;
+    en = 1;
 	rst = 1;
 	#10 rst = 0;
 	//$monitor("%b",s);
 end
 
-always @(posedge term)
-    #5 $finish;
+always @(posedge clk) begin
+    if(term) begin
+        if(cnt == 0) begin
+            en = 0;
+            #100 l = 0;
+            rst  = 1;
+            en = 1;
+        end else #10 $finish;
+        cnt = cnt + 1'b1;
+    end
+    rst = 0;
+end
 
 endmodule
 

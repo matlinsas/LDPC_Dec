@@ -1,6 +1,6 @@
 `ifdef SIMULATION
-    //`include "core.v"
-    `include "test/test_core.v"
+    `include "core.v"
+    //`include "test/test_core.v"
     `include "quant.v"
     `include "gng/gng.v"
 `endif
@@ -26,10 +26,12 @@ wire signed [15:0] data_out [buff_num-1:0];
 wire signed [data_w-1:0] llr [buff_num-1:0];
 wire [dim-1:0] res;
 wire term;
-wire ldpc_en;
 wire [dim*data_w-1:0] sig;
 wire [buff_num-1:0] gen_term;
 
+reg ldpc_en;
+reg ldpc_rst;
+reg [dim*data_w-1:0] llr_sig;
 reg [len:0] buff [buff_num-1:0];
 reg [3:0] snr_idx;
 reg signed [4:0] frac_w;
@@ -44,8 +46,8 @@ ldpc_core #(
 ) LDPC(
     .en(ldpc_en), 
     .clk(clk), 
-    .rst(rst), 
-    .sig(sig), 
+    .rst(ldpc_rst), 
+    .l(llr_sig), 
     .mtx(mtx), 
     .res(res), 
     .term(term)
@@ -71,13 +73,26 @@ for(i=0; i<buff_num; i=i+1) begin:sig_gen
     always @(posedge clk or posedge rst) begin
         if(rst) begin
             buff[i] <= 1;
+            ldpc_rst <= 1;
+            llr_sig <= 0;
         end
         else begin
             if(valid_out[i] && ~buff[i][len]) begin
                 buff[i] <= (buff[i]<<data_w) | llr[i];
             end
-            if(buff[i][len] && term) begin
-                buff[i] <= 1;
+
+            if(term) begin
+                if(&gen_term) begin
+                    ldpc_rst <= 1'b1;
+                    ldpc_en <= 1'b1;
+                    llr_sig <= sig;
+                    buff[i] <= 1;
+                end
+                else ldpc_en <= 1'b0;
+            end
+            else begin
+                ldpc_rst <= 1'b0;
+                ldpc_en <= 1'b1;
             end
         end
     end
@@ -92,8 +107,6 @@ always @(clk) begin
     snr_idx <= 4'd10;
     frac_w <= -5'd1;
 end
-
-assign ldpc_en = (&gen_term) | (~term);
 
 assign mtx={
     8'd0,-8'd1,-8'd1,-8'd1,-8'd1,-8'd1,-8'd1,-8'd1,-8'd1,-8'd1,-8'd1,8'd7,8'd26,-8'd1,-8'd1,-8'd1,8'd41,-8'd1,8'd66,-8'd1,-8'd1,-8'd1,-8'd1,8'd43,

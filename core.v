@@ -5,7 +5,7 @@
     `include "check.v"
 `endif
 
-module ldpc_core(en, clk, rst, sig, mtx, res, term);
+module ldpc_core(en, clk, rst, l, mtx, res, term);
 parameter data_w = 5;
 parameter mtx_w = 8;
 parameter R = 24;
@@ -18,12 +18,11 @@ localparam temp_w = data_w + ext_w;
 localparam count_w = 6;
 
 input clk, rst, en;
-input [R*D*data_w-1:0] sig;
+input [R*D*data_w-1:0] l;
 input [C*R*mtx_w-1:0] mtx;
 output reg term;
 output reg [R*D-1:0] res;
 
-reg [R*D*data_w-1:0] l;
 reg [count_w-1:0] count;
 
 wire check;
@@ -65,7 +64,7 @@ for(j=0; j<C*D; j=j+1024) begin :iter0
 		cnu #(.res_w(data_w), .ext_w(ext_w), .D(R), .idx_w(idx_w)) CNU (
 			.en(en),
 			.clk(clk),
-			.rst(rst | term),
+			.rst(rst),
 			.q(c_ibus[i]),
 			.r(c_obus[i])
 		);
@@ -87,22 +86,14 @@ endgenerate
 
 check #(.mtx_w(mtx_w), .C(C), .R(R), .D(D)) CH (.dec(dec), .mtx(mtx), .res(check));
 
-always @(posedge clk or posedge rst or posedge term) begin
+always @(posedge clk or posedge rst) begin
 	if(rst) begin
-		l <= sig;
 		res <= 0;
 		count <= 0;
 		term <= 1'b0;
-	end else if(term)begin
-        if(en) begin
-            l <= sig;
-            count <= 0;
-            term <= 1'b0;
-        end
-	end else begin
+    end else begin
         if(en) begin
             count <= count + 1'b1;
-            term <= ~check;
             if(count[count_w-1] || ~check) begin
                 res <= dec;
                 term <= 1'b1;

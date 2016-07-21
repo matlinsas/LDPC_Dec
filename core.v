@@ -35,7 +35,7 @@ wire [temp_w*R-1:0] c_ibus [C*D-1:0];
 wire [data_w*R-1:0] c_obus [C*D-1:0];
 wire [data_w*C-1:0] v_ibus [R*D-1:0];
 wire [temp_w*C-1:0] v_obus [R*D-1:0];
-wire signed [temp_w-1:0] test_bus[R*D-1:0];
+//wire signed [temp_w-1:0] test_bus[R*D-1:0];
 
 genvar i,j,k;
 
@@ -77,8 +77,8 @@ for(j=0; j<R*D; j=j+1024) begin :iter1
 			.l(l[i*data_w +:data_w]),
 			.r(v_ibus[i]),
 			.q(v_obus[i]),
-			.dec(dec[i]),
-            .test(test_bus[i])
+			.dec(dec[i])
+            //.test(test_bus[i])
 		);
 	end
 end
@@ -116,6 +116,7 @@ function integer log2;
 endfunction
 
 //---------------- TEST -----------------------
+/*
 integer ones, idx, f1;
 initial begin
     f1 = $fopen("vnu_out.txt","w");
@@ -125,13 +126,14 @@ always @* begin
     for (idx =0; idx < (D*R); idx = idx +1) begin
         ones = ones + dec[idx];
     end
-end 
+end
 always @(posedge clk) begin
     for (idx=0; idx < (D*R); idx = idx + 1) begin
         $fwrite(f1, "%d ", test_bus[idx]);
     end
     $fwrite(f1, "\n");
 end
+*/
 
 endmodule
 

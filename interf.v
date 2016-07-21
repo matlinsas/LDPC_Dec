@@ -128,9 +128,6 @@ initial begin
     //$monitor("%d\t%d", snr_idx, frac_w);
     $monitor("%b\t%d\t%b", data_out[0], llr[0], buff[0]);
 end
-always @(posedge term) begin
-    #1000 $finish;
-end
 
 endmodule
 

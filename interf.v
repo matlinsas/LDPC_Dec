@@ -18,7 +18,7 @@ localparam dim = R*D;
 localparam len = buff_len*data_w;
 
 input clk, rst;
-output [11:0] errs;
+output reg [11:0] errs;
 
 wire [C*R*mtx_w-1:0] mtx;
 wire [buff_num-1:0] valid_out;
@@ -26,6 +26,7 @@ wire signed [15:0] data_out [buff_num-1:0];
 wire signed [data_w-1:0] llr [buff_num-1:0];
 wire [dim-1:0] res;
 wire term;
+wire frame_err;
 wire [dim*data_w-1:0] sig;
 wire [buff_num-1:0] gen_term;
 
@@ -50,7 +51,8 @@ ldpc_core #(
     .l(llr_sig), 
     .mtx(mtx), 
     .res(res), 
-    .term(term)
+    .term(term),
+	.err(frame_err)
 );
 
 generate
@@ -72,6 +74,7 @@ for(i=0; i<buff_num; i=i+1) begin:sig_gen
 
     always @(posedge clk or posedge rst) begin
         if(rst) begin
+			errs <= 0;
             buff[i] <= 1;
             ldpc_rst <= 1;
             llr_sig <= 0;
@@ -82,6 +85,7 @@ for(i=0; i<buff_num; i=i+1) begin:sig_gen
             end
 
             if(term) begin
+				if(frame_err) errs = errs + 1;
                 if(&gen_term) begin
                     ldpc_rst <= 1'b1;
                     ldpc_en <= 1'b1;

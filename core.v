@@ -5,7 +5,7 @@
     `include "check.v"
 `endif
 
-module ldpc_core(en, clk, rst, l, mtx, res, term);
+module ldpc_core(en, clk, rst, l, mtx, res, term, err);
 parameter data_w = 5;
 parameter mtx_w = 8;
 parameter R = 24;
@@ -21,6 +21,7 @@ input clk, rst, en;
 input [R*D*data_w-1:0] l;
 input [C*R*mtx_w-1:0] mtx;
 output reg term;
+output reg err;
 output reg [R*D-1:0] res;
 
 reg [count_w-1:0] count;
@@ -89,6 +90,7 @@ check #(.mtx_w(mtx_w), .C(C), .R(R), .D(D)) CH (.dec(dec), .mtx(mtx), .res(check
 always @(posedge clk or posedge rst) begin
 	if(rst) begin
 		res <= 0;
+		err <= 0;
 		count <= 0;
 		term <= 1'b0;
     end else begin
@@ -96,6 +98,7 @@ always @(posedge clk or posedge rst) begin
             count <= count + 1'b1;
             if(count[count_w-1] || ~check) begin
                 res <= dec;
+				err <= check;
                 term <= 1'b1;
             end
         end

@@ -85,7 +85,7 @@ for(i=0; i<buff_num; i=i+1) begin:sig_gen
             end
 
             if(term) begin
-				if(frame_err) errs = errs + 1;
+				if(frame_err) errs <= errs + 1;
                 if(&gen_term) begin
                     ldpc_rst <= 1'b1;
                     ldpc_en <= 1'b1;

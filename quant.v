@@ -1,5 +1,5 @@
 module quant(snr_idx, frac_w, data_in, llr);
-  parameter data_w = 5;
+  parameter data_w = 6;
   
   input [3:0] snr_idx;
   input signed [4:0] frac_w;
@@ -8,15 +8,16 @@ module quant(snr_idx, frac_w, data_in, llr);
   
   wire signed [data_w-1:0] llr_shift;
   wire signed [25:0] noise;  // Q5,21
-  wire signed [17:0] one ={8'd1,{11{1'b0}}}; // Q7,11 = 1.000..
-  wire signed [17:0] rec; // Q7,11
-  wire signed [27:0] llr_temp; // Q17,11
-  wire signed [27:0] llr_pmax; // Q17,11
-  wire signed [27:0] llr_nmax; // Q17,11
-  wire signed [27:0] llr_sat; // Q17,11
-  wire signed [27:0] llr_div; // Q17,11
+  wire signed [17:0] one ={6'd1,{12{1'b0}}}; // Q6,12 = 1.000..
+  wire signed [17:0] rec; // Q6,12
+  wire signed [28:0] llr_temp; // Q18,11
+  wire signed [18:0] llr_div; // Q18,11
+  wire signed [18:0] llr_pmax; // Q8,11
+  wire signed [18:0] llr_nmax; // Q8,11
+  wire signed [18:0] llr_sat; // Q8,11
   wire [4:0] int_w;
-  reg signed [10:0] sqrt_snr, snr;
+  reg signed [10:0] sqrt_snr;
+  reg signed [11:0] snr;
   
   // SNR LUT
   always @* begin
@@ -34,37 +35,37 @@ module quant(snr_idx, frac_w, data_in, llr);
 	  default: sqrt_snr = 11'd725;
     endcase
     case (snr_idx)
-      4'd0: snr = 11'd813;
-      4'd1: snr = 11'd777;
-      4'd2: snr = 11'd742;
-      4'd3: snr = 11'd708;
-      4'd4: snr = 11'd677;
-      4'd5: snr = 11'd646;
-      4'd6: snr = 11'd617;
-      4'd7: snr = 11'd589;
-      4'd8: snr = 11'd563;
-      4'd9: snr = 11'd537;
-	  default: snr = 11'd513;
+      4'd0: snr = 12'd1289;
+      4'd1: snr = 12'd1350;
+      4'd2: snr = 12'd1414;
+      4'd3: snr = 12'd1480;
+      4'd4: snr = 12'd1550;
+      4'd5: snr = 12'd1623;
+      4'd6: snr = 12'd1699;
+      4'd7: snr = 12'd1780;
+      4'd8: snr = 12'd1863;
+      4'd9: snr = 12'd1951;
+	  default: snr = 11'd2043;
     endcase
   end
   
   assign int_w = data_w - frac_w;
   assign noise = data_in * sqrt_snr;
-  assign rec = one + {{2{noise[25]}}, noise[25:10]};
-  assign llr_temp = ({{10{rec[17]}}, rec} <<< 11);
-  assign llr_div = llr_temp[27] ? -(-llr_temp/snr):llr_temp/snr;
-  assign llr_pmax = (1'd1 <<< (11 + int_w)) - 1;
-  assign llr_nmax = ({28{1'd1}} <<< (11 + int_w));
-  assign llr_sat = (llr_div < llr_pmax && llr_div > llr_nmax) ? llr_div:((llr_div[27])?llr_nmax:llr_pmax);
+  assign rec = one + {noise[25], noise[25:9]};
+  assign llr_temp = {{11{rec[16]}}, rec} * snr;
+  assign llr_div = llr_temp[28:10];
+  assign llr_pmax = (1'd1 <<< (10 + int_w)) - 1;
+  assign llr_nmax = ({19{1'd1}} <<< (10 + int_w));
+  assign llr_sat = (llr_div < llr_pmax && llr_div > llr_nmax) ? llr_div:((llr_temp[28])?llr_nmax:llr_pmax);
   assign llr_shift = llr_sat >>> (5'd11-frac_w);
   assign llr = frac_w[4] ? llr_shift <<< (-frac_w) : llr_shift;
- /* 
+/*  
   initial begin
     $monitor(
       "%b\n%b\n%d\n%d\n%d\n%b\n%b\n%b\n%b\n%b\n%b\n%b\n%b\n",
       llr_pmax, llr_nmax, int_w, sqrt_snr, snr, data_in, noise, rec, llr_temp, llr_div, llr_sat, llr_shift, llr
     );
   end
-  */      
+*/ 
 endmodule
 

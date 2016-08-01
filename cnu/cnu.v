@@ -2,6 +2,7 @@
     `include "abs.v"
     `include "sat.v"
     `include "cmp_tree.v"
+	`include "sgn_ram.v"
 `endif
 module cnu(en, clk, rst, q, r);
 parameter D=8;
@@ -20,8 +21,8 @@ wire signed [data_w+1:0] tmin, tmin2;
 wire	[data_w*D-1:0] qmag;
 wire	[idx_w-1:0] min_idx;
 wire	[D-1:0] qsgn;
-reg	[D-1:0] qsgn2;
-reg	rsgn;
+wire	[D-1:0] qsgn2;
+wire	rsgn;
 
 genvar i;
 
@@ -43,15 +44,10 @@ cmp_tree #(.D(D), .data_w(data_w), .idx_w(idx_w)) CPT (
 	.min_idx(min_idx)
 );
 
-always @(posedge clk or posedge rst) begin
-	if(rst) begin
-		rsgn <= 0;
-		qsgn2 <= 0;
-	end else if(en) begin
-		rsgn <= ^qsgn;
-		qsgn2 <= qsgn;
-	end
-end
+sgn_ram #(.D(D)) SRAM(
+	.en(en), .clk(clk), .rst(rst), .qsgn(qsgn),
+	.rsgn(rsgn), .qsgn2(qsgn2)
+);
 
 assign tmin = {2'b0, min};
 assign tmin2 = {2'b0, min2};

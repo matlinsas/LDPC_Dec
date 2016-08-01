@@ -87,7 +87,7 @@ endgenerate
 
 check #(.mtx_w(mtx_w), .C(C), .R(R), .D(D)) CH (.dec(dec), .mtx(mtx), .res(check));
 
-always @(posedge clk or posedge rst) begin
+always @(posedge clk) begin
 	if(rst) begin
 		res <= 0;
 		err <= 0;

@@ -72,7 +72,7 @@ for(i=0; i<buff_num; i=i+1) begin:sig_gen
         .llr(llr[i])
     );
 
-    always @(posedge clk or posedge rst) begin
+    always @(posedge clk) begin
         if(rst) begin
 			errs <= 0;
             buff[i] <= 1;

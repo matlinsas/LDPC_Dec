@@ -1,6 +1,9 @@
 `ifdef SIMULATION
     `include "cmp.v"
 `endif
+
+(* bram_map="yes" *)
+
 module cmp_tree(en, clk, rst, in, min, min2, min_idx);
 parameter data_w = 8;
 parameter idx_w = 8;
@@ -52,7 +55,7 @@ for(i=0; i<TH; i=i+1) begin :build_tree
 end
 endgenerate
 
-always @(posedge clk or posedge rst) begin
+always @(posedge clk) begin
     if(rst)begin
         min <= 0;
         min2 <= 0;

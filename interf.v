@@ -1,5 +1,5 @@
 `ifdef SIMULATION
-    `include "core.v"
+    `include "coreF.v¡±
     //`include "test/test_core.v"
     `include "quant.v"
     `include "gng/gng.v"

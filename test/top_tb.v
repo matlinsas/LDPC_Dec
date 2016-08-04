@@ -1,6 +1,6 @@
 `define SIMULATION
 
-module tb;
+module top_tb;
 parameter data_w=6;
 parameter mtx_w=8;
 parameter C=12;

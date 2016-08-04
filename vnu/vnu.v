@@ -4,7 +4,6 @@
 module vnu(l, r, q, dec);//,test);
 parameter data_w = 8;
 parameter D=12;
-parameter N=6;
 parameter ext_w = 3;
 localparam sum_w = data_w + ext_w;
 localparam TH = tree_h(D+1);
@@ -57,8 +56,10 @@ assign dec = s[sum_w-1];
 
 function integer next_n;
     input integer n;
+	 integer t;
     begin
-        next_n = n%3 + (n << 1)/3;
+	     t = n%3;
+        next_n = t + ((n-t) << 1)/3;
     end
 endfunction
 

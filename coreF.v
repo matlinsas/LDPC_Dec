@@ -3520,6 +3520,7 @@ cnu #(.res_w(data_w), .ext_w(ext_w), .D(6), .idx_w(idx_w)) CNU1150 ( .en(en), .c
 wire [temp_w*6-1:0] c1151ibus;
 wire [data_w*6-1:0] c1151obus;
 cnu #(.res_w(data_w), .ext_w(ext_w), .D(6), .idx_w(idx_w)) CNU1151 ( .en(en), .clk(clk), .rst(rst), .q(c1151ibus), .r(c1151obus));
+
 wire [data_w*3-1:0] v0ibus;
 wire [temp_w*3-1:0] v0obus;
 vnu #(.data_w(data_w), .D(3), .ext_w(ext_w)) VNU0 (.l(l[0*data_w +:data_w]), .r(v0ibus), .q(v0obus), .dec(dec[0]));

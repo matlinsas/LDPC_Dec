@@ -1,7 +1,6 @@
 `ifdef SIMULATION
     `include "cnu/cnu.v"
     `include "vnu/vnu.v"
-    `include "cyc_shift.v"
     `include "check.v"
 `endif
 

@@ -33,9 +33,9 @@ for(i=0; i<(D>>1); i=i+1) begin :generate_pairs
 end
 
 if(D & 1) begin
-    assign pairs[0][data_w*2*((DD>>1)-1) +:data_w*2]={{data_w{1'b1}}, in[data_w*(D-1) +:data_w]};
-    assign m_idx[0][idx_w*2*((DD>>1)-1) +:idx_w]=D;
-    assign m_idx[0][idx_w*2*((DD>>1)-1)+idx_w +:idx_w]=D-1;
+    assign pairs[0][data_w*2*((DD>>1)-1) +:data_w*2]={1'b0,{data_w-1{1'b1}}, in[data_w*(D-1) +:data_w]};
+    assign m_idx[0][idx_w*2*((DD>>1)-1) +:idx_w]=D-1;
+    assign m_idx[0][idx_w*2*((DD>>1)-1)+idx_w +:idx_w]=D;
 end
 
 for(i=0; i<TH; i=i+1) begin :build_tree

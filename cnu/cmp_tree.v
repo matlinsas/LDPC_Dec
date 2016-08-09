@@ -5,9 +5,9 @@
 (* bram_map="yes" *)
 
 module cmp_tree(en, clk, rst, in, min, min2, min_idx);
-parameter data_w = 8;
-parameter idx_w = 8;
-parameter D = 5;
+parameter data_w = 9;
+parameter idx_w = 3;
+parameter D = 7;
 localparam DD = (D & 1)?(D + 1):D;
 localparam TH = tree_h(DD>>1);
 

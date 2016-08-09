@@ -4,21 +4,21 @@
     `include "check.v"
 `endif
 
-module ldpc_core(en, clk, rst, l, mtx, res, term, err);
-parameter data_w = 5;
+module ldpc_core(en, clk, rst, l/*, mtx*/, res, term, err);
+parameter data_w = 6;
 parameter mtx_w = 8;
 parameter R = 24;
 parameter C = 12;
 parameter D = 96;
 parameter N = 6;
 localparam ext_w = log2(N);
-localparam idx_w = log2(R);
+localparam idx_w = 3;//log2(R);
 localparam temp_w = data_w + ext_w;
-localparam count_w = 6;
+localparam count_w = 5;
 
 input clk, rst, en;
 input [R*D*data_w-1:0] l;
-input [C*R*mtx_w-1:0] mtx;
+//input [C*R*mtx_w-1:0] mtx;
 output reg term;
 output reg err;
 output reg [R*D-1:0] res;
@@ -28,8 +28,8 @@ reg [count_w-1:0] count;
 wire check;
 wire [R*D-1:0] dec;
 
-check #(.mtx_w(mtx_w), .C(C), .R(R), .D(D)) CH (.dec(dec), .mtx(mtx), .res(check));
-
+//check #(.mtx_w(mtx_w), .C(C), .R(R), .D(D)) CH (.dec(dec), .mtx(mtx), .res(check));
+assign check = 1'b1;
 always @(posedge clk) begin
 	if(rst) begin
 		res <= 0;

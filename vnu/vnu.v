@@ -1,4 +1,4 @@
-module vnu(l, r, q, dec);
+module vnux(l, r, q, dec);
 parameter data_w = 6;
 parameter D=3;
 parameter ext_w = 3;

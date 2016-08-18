@@ -17,7 +17,7 @@ output reg [D-1:0] min_idx;
 reg [2*data_w-1:0] pair_res;
 reg [D-1:0] idx_res;
 
-wire [2*data_w-1:0] pair_a, pair_b, pair_c, pair_res;
+wire [2*data_w-1:0] pair_a, pair_b, pair_c;
 wire [idx_w-1:0] idx_a, idx_b;
 wire [2*idx_w-1:0] idx_c;
 wire c0, c1;

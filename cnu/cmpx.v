@@ -18,8 +18,7 @@ reg [2*data_w-1:0] pair_res;
 reg [idx_w-1:0] idx_res;
 
 wire [2*data_w-1:0] pair_a, pair_b, pair_c, pair_res;
-wire [idx_w-1:0] idx_a, idx_b;
-wire [idx_w-1:0] idx_c;
+wire [idx_w-1:0] idx_a, idx_b, idx_c;
 wire c0, c1;
 
 cmp3 #(.data_w(data_w), .idx_b(3'd0)) CP3A (.in(in[0*data_w +:3*data_w]), .out(pair_a), .idx(idx_a));

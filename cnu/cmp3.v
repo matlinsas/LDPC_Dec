@@ -1,5 +1,6 @@
 module cmp3(in, out, idx);
 parameter data_w = 9;
+parameter [2:0] idx_b = 3'd3;
 localparam idx_w = 3;
 
 input [data_w*3-1:0] in;
@@ -16,27 +17,27 @@ always @(*) begin
 	case({c01, c02, c12})
 		3'b000:begin
 			out = {in[1*data_w +:data_w], in[2*data_w +:data_w]};
-			idx = 3'b100;
+			idx = idx_b+3'd2;
 		end
 		3'b001:begin
 			out = {in[2*data_w +:data_w], in[1*data_w +:data_w]};
-			idx = 3'b010;
+			idx = idx_b+3'd1;
 		end
 		3'b011:begin
 			out = {in[0*data_w +:data_w], in[1*data_w +:data_w]};
-			idx = 3'b010;
+			idx = idx_b+3'd1;
 		end
 		3'b100:begin
 			out = {in[0*data_w +:data_w], in[2*data_w +:data_w]};
-			idx = 3'b100;
+			idx = idx_b+3'd2;
 		end
 		3'b110:begin
 			out = {in[2*data_w +:data_w], in[0*data_w +:data_w]};
-			idx = 3'b001;
+			idx = idx_b;
 		end
 		default:begin
 			out = {in[1*data_w +:data_w], in[0*data_w +:data_w]};
-			idx = 3'b001;
+			idx = idx_b;
 		end
 	endcase
 end
